@@ -16,12 +16,12 @@
     .preview { display: grid; place-items: center; min-height: 220px; border: 1px solid #8886; border-radius: 12px; overflow: auto; background: #0001; }
     .payment-card { flex: none; display: grid; place-items: center; width: 323.53px; aspect-ratio: 85.6 / 53.98; border-radius: 10px; background: linear-gradient(135deg, #355cde, #8b5cf6); color: white; box-shadow: 0 8px 24px #0004; }
     .rulers { display: grid; gap: .9rem; }
-    .ruler-wrap { display: grid; gap: .2rem; overflow-x: auto; overflow-y: hidden; padding-bottom: .15rem; }
+    .ruler-wrap { display: grid; gap: .2rem; overflow: hidden; }
     .ruler-title { font-size: .85rem; font-weight: 650; }
-    .ruler { position: relative; height: 2rem; min-width: 1px; border-bottom: 2px solid currentColor; }
-    .ruler-mark { position: absolute; bottom: 0; width: 1px; height: .45rem; background: currentColor; }
-    .ruler-mark.major { height: 1rem; }
-    .ruler-mark span { position: absolute; top: 1.05rem; left: 50%; transform: translateX(-50%); font-size: .65rem; white-space: nowrap; }
+    .ruler { position: relative; width: 100%; height: 1.55rem; border-bottom: 1px solid currentColor; }
+    .ruler-mark { position: absolute; bottom: 0; width: 1px; height: .3rem; background: currentColor; }
+    .ruler-mark.major { height: .6rem; }
+    .ruler-mark span { position: absolute; bottom: .68rem; left: 50%; transform: translateX(-50%); font-size: .62rem; line-height: 1; white-space: nowrap; }
     .estimate { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; }
     .badge { padding: .2rem .55rem; border-radius: 999px; background: #8b5cf633; font-size: .85rem; }
     label { display: grid; gap: .35rem; }
@@ -71,6 +71,6 @@
     </section>
     <p class="muted">No measurements leave your browser. Automatic estimates are best-effort; use the calibration control for a verified result.</p>
   </main>
-  <script type="module" src="./demo.js?v=0.2.2-rulers-compact"></script>
+  <script type="module" src="./demo.js?v=0.2.2-rulers-numbered"></script>
 </body>
 </html>

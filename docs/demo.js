@@ -36,8 +36,10 @@ function render() {
 
 function renderRuler(ruler, count, stepWidth, subdivisions) {
   ruler.replaceChildren()
-  ruler.style.width = `${count * stepWidth}px`
-  for (let index = 0; index <= count * subdivisions; index += 1) {
+  const availableWidth = ruler.parentElement?.clientWidth || count * stepWidth
+  const visibleCount = Math.max(1, Math.floor(availableWidth / stepWidth))
+  ruler.style.width = '100%'
+  for (let index = 0; index <= visibleCount * subdivisions; index += 1) {
     const mark = document.createElement('div')
     const isMajor = index % subdivisions === 0
     mark.className = `ruler-mark${isMajor ? ' major' : ''}`
