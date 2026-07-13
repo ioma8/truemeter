@@ -3,6 +3,8 @@ import {
     CSS_REFERENCE_PPI,
     DISPLAY_CALIBRATIONS_STORAGE_KEY,
     clearDisplayCalibration,
+    cssPixelsForInches,
+    cssPixelsForMillimetres,
     configureDisplayCalibrationStorage,
     estimateFromDeviceProfiles,
     estimateFromEdidProfiles,
@@ -39,6 +41,13 @@ afterEach(() => {
 describe('display calibration', () => {
     it('derives PPI from a panel resolution and physical diagonal', () => {
         expect(ppiFromResolutionAndDiagonal([3840, 2160], 27)).toBeCloseTo(163.18, 2)
+    })
+
+    it('converts physical millimetres to CSS pixels using the estimate scale', () => {
+        expect(cssPixelsForMillimetres(25.4, { screenScale: 1 })).toBe(CSS_REFERENCE_PPI)
+        expect(cssPixelsForMillimetres(300, { screenScale: 1.25 })).toBeCloseTo(1417.32, 2)
+        expect(cssPixelsForInches(1, { screenScale: 1 })).toBe(CSS_REFERENCE_PPI)
+        expect(cssPixelsForInches(12, { screenScale: 1.25 })).toBe(1440)
     })
 
     it('uses a matching ScreenRes panel profile for a current iPhone viewport', () => {

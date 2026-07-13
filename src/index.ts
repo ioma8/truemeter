@@ -171,6 +171,16 @@ export function screenScaleForPpi(ppi: number, pixelsPerCssPixel: number): numbe
     return ppi / (CSS_REFERENCE_PPI * pixelsPerCssPixel)
 }
 
+/** Converts a physical millimetre measurement to CSS pixels for a resolved display. */
+export function cssPixelsForMillimetres(millimetres: number, estimate: Pick<DisplayEstimate, 'screenScale'>): number {
+    return (millimetres / 25.4) * CSS_REFERENCE_PPI * estimate.screenScale
+}
+
+/** Converts a physical inch measurement to CSS pixels for a resolved display. */
+export function cssPixelsForInches(inches: number, estimate: Pick<DisplayEstimate, 'screenScale'>): number {
+    return inches * CSS_REFERENCE_PPI * estimate.screenScale
+}
+
 function profilePpi(profile: PanelProfile): number {
     return profile.ppi ?? ppiFromResolutionAndDiagonal(profile.resolution, profile.diagonalInches)
 }

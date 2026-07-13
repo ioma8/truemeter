@@ -46,23 +46,19 @@ The library is browser-first and has no runtime network requests. The optional d
 
 ## Render an image at its true physical size
 
-If an object spans a known fraction of an image's width, scale the **image frame** so that the object itself measures correctly. The source image may include padding or an open tool: only `objectFraction` needs to describe the visible object's share of the image width.
+To render an image at a physical width of 30 cm, convert 300 millimetres to CSS pixels using the display estimate:
 
 ```ts
-import { CSS_REFERENCE_PPI, resolveDisplayEstimate } from 'truemeter'
+import { cssPixelsForMillimetres, resolveDisplayEstimate } from 'truemeter'
 
-const knifeLengthMm = 91
-const knifeBodyFraction = 0.64 // body occupies 64% of the source image width
 const estimate = await resolveDisplayEstimate()
+const widthInCssPixels = cssPixelsForMillimetres(300, estimate)
 
-// CSS pixels needed for the whole source image. Keep the image aspect ratio.
-const imageWidthCssPx = (knifeLengthMm / knifeBodyFraction)
-  * (CSS_REFERENCE_PPI / 25.4)
-  * estimate.screenScale
-
-imageElement.style.width = `${imageWidthCssPx}px`
+imageElement.style.width = `${widthInCssPixels}px`
 imageElement.style.height = 'auto'
 ```
+
+For inch-based measurements, use `cssPixelsForInches(12, estimate)` in the same way.
 
 `screenScale` is the correction from CSS's nominal 96 dpi to the current display. A 1 mm CSS reference requires `CSS_REFERENCE_PPI / 25.4 * screenScale` CSS pixels. Show a calibration control whenever the result is not `verified`; save its value with `saveDisplayCalibration()` so future renders on that display become verified.
 
@@ -123,11 +119,20 @@ See [ATTRIBUTIONS.md](./ATTRIBUTIONS.md) for source licenses. The code is MIT; g
 
 ## API
 
-- `resolveDisplayEstimate()` resolves the current browser display.
-- `resolveDisplayEstimateForContext(context)` resolves a supplied display context, useful for testing or display-management integrations.
-- `requestDetailedDisplayContext()` optionally asks for a display label after a user gesture.
-- `saveDisplayCalibration()` and `clearDisplayCalibration()` manage per-display calibration.
-- `configureDisplayCalibrationStorage()` adapts the storage keys for an existing application.
+The recommended application API is intentionally small:
+
+- `resolveDisplayEstimate(): Promise<DisplayEstimate>` resolves the current browser display.
+- `resolveDisplayEstimateForContext(context): Promise<DisplayEstimate>` resolves a supplied context for integrations and tests.
+- `cssPixelsForMillimetres(millimetres, estimate): number` converts millimetres to CSS pixels.
+- `cssPixelsForInches(inches, estimate): number` converts inches to CSS pixels.
+- `requestDetailedDisplayContext(): Promise<DisplayContext | null>` optionally identifies the current display after a user gesture.
+- `saveDisplayCalibration(context, estimate, screenScale): void` saves a user-adjusted scale for that display.
+- `clearDisplayCalibration(estimate): void` removes the active display's saved calibration.
+- `configureDisplayCalibrationStorage(options): void` changes storage keys when migrating an existing application.
+
+The main public types are `DisplayContext` and `DisplayEstimate`. `DisplayContext` contains `width`, `height`, `dpr`, `platform`, and `userAgent`, with optional `model`, `screenLabel`, and `isInternal` fields. `DisplayEstimate` contains `ppi`, `screenScale`, `pixelsPerCssPixel`, `source`, `confidence`, optional `label`, and a stable calibration `signature`.
+
+`getDisplayContext()`, `getPermittedDetailedDisplayContext()`, and `canIdentifyDisplay()` are available for applications that need explicit permission or capability handling. The profile-matching and PPI helper exports are low-level compatibility exports; typical applications should not need them.
 
 See the exported TypeScript declarations for the complete API contract.
 
