@@ -26,8 +26,8 @@ function render() {
   const scale = Number(calibration.value)
   const width = cssPixelsForMillimetres(85.6, { screenScale: scale })
   card.style.width = `${width}px`
-  renderRuler(cmRuler, 10, cssPixelsForMillimetres(10, { screenScale: scale }), 10)
-  renderRuler(inchRuler, 4, cssPixelsForMillimetres(25.4, { screenScale: scale }), 4)
+  renderRuler(cmRuler, 5, cssPixelsForMillimetres(10, { screenScale: scale }), 10)
+  renderRuler(inchRuler, 2, cssPixelsForMillimetres(25.4, { screenScale: scale }), 4)
   calibrationValue.value = `${scale.toFixed(3)}×`
   estimateBadge.textContent = manuallyCalibrated ? 'manual calibration' : estimate.confidence
   estimateOutput.value = `${estimate.ppi.toFixed(1)} PPI · ${estimate.source}`
