@@ -1,0 +1,57 @@
+{
+  "name": "truemeter",
+  "version": "0.1.0",
+  "description": "Browser-first physical display PPI estimation from known panels, display labels, and local calibration.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "ATTRIBUTIONS.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --splitting --clean",
+    "test": "vitest run",
+    "type-check": "tsc --noEmit",
+    "sync-display-profiles": "node scripts/sync-display-profiles.mjs && node scripts/sync-screenres-profiles.mjs",
+    "sync-edid-profiles": "node scripts/sync-edid-profiles.mjs",
+    "prepack": "npm run build",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "ppi",
+    "display",
+    "screen",
+    "physical-size",
+    "calibration",
+    "edid",
+    "browser"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ioma8/truemeter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ioma8/truemeter/issues"
+  },
+  "homepage": "https://github.com/ioma8/truemeter#readme",
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "jsdom": "^28.1.0",
+    "node-device-detector": "^2.2.6",
+    "stf-device-db": "^1.2.0",
+    "tsup": "^8.5.1",
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.18"
+  }
+}
