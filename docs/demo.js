@@ -1,6 +1,7 @@
 import {
   clearDisplayCalibration,
   cssPixelsForMillimetres,
+  estimateKnownDisplay,
   getDisplayContext,
   requestDetailedDisplayContext,
   resolveDisplayEstimateForContext,
@@ -42,10 +43,21 @@ async function resolve(contextToResolve) {
   setBusy(true)
   context = contextToResolve
   try {
-    estimate = await resolveDisplayEstimateForContext(context)
+    estimate = await Promise.race([
+      resolveDisplayEstimateForContext(context),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Display estimate timed out')), 10000)),
+    ])
     manuallyCalibrated = estimate.source === 'saved-calibration'
     if (!manuallyCalibrated) status.textContent = 'Using the automatic display estimate.'
     calibration.value = String(Math.min(2, Math.max(0.5, estimate.screenScale)))
+    render()
+  } catch {
+    // Keep the demo usable if a browser blocks an optional capability or a CDN chunk
+    // cannot be loaded. The synchronous resolver still provides the CSS baseline.
+    estimate = estimateKnownDisplay(context)
+    manuallyCalibrated = false
+    calibration.value = String(Math.min(2, Math.max(0.5, estimate.screenScale)))
+    status.textContent = 'Automatic enhancements are unavailable; showing the CSS baseline.'
     render()
   } finally {
     setBusy(false)
