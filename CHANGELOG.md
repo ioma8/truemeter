@@ -2,6 +2,11 @@
 
 All notable changes to TrueMeter are documented here.
 
+## [0.2.2] - 2026-07-13
+
+- Added simple physical sizing helpers for millimetres and inches.
+- Simplified and documented the recommended public API.
+
 ## [0.2.1] - 2026-07-13
 
 - Added the live demo, release automation, npm provenance publishing, and repository contribution guidance.
