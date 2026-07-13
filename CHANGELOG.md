@@ -2,6 +2,10 @@
 
 All notable changes to TrueMeter are documented here.
 
+## [0.2.1] - 2026-07-13
+
+- Added the live demo, release automation, npm provenance publishing, and repository contribution guidance.
+
 ## [0.2.0] - 2026-07-13
 
 - Published package metadata for npm distribution.
