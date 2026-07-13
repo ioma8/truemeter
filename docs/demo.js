@@ -3,6 +3,8 @@ const estimateOutput = document.querySelector('#estimate')
 const calibration = document.querySelector('#calibration')
 const calibrationValue = document.querySelector('#calibration-value')
 const estimateBadge = document.querySelector('#estimate-badge')
+const cmRuler = document.querySelector('#cm-ruler')
+const inchRuler = document.querySelector('#inch-ruler')
 const identify = document.querySelector('#identify')
 const restore = document.querySelector('#restore')
 const status = document.querySelector('#status')
@@ -24,10 +26,29 @@ function render() {
   const scale = Number(calibration.value)
   const width = cssPixelsForMillimetres(85.6, { screenScale: scale })
   card.style.width = `${width}px`
+  renderRuler(cmRuler, 10, cssPixelsForMillimetres(10, { screenScale: scale }), 10)
+  renderRuler(inchRuler, 4, cssPixelsForMillimetres(25.4, { screenScale: scale }), 4)
   calibrationValue.value = `${scale.toFixed(3)}×`
   estimateBadge.textContent = manuallyCalibrated ? 'manual calibration' : estimate.confidence
   estimateOutput.value = `${estimate.ppi.toFixed(1)} PPI · ${estimate.source}`
   restore.disabled = resolving || !manuallyCalibrated
+}
+
+function renderRuler(ruler, count, stepWidth, subdivisions) {
+  ruler.replaceChildren()
+  ruler.style.width = `${count * stepWidth}px`
+  for (let index = 0; index <= count * subdivisions; index += 1) {
+    const mark = document.createElement('div')
+    const isMajor = index % subdivisions === 0
+    mark.className = `ruler-mark${isMajor ? ' major' : ''}`
+    mark.style.left = `${(index / subdivisions) * stepWidth}px`
+    if (isMajor) {
+      const label = document.createElement('span')
+      label.textContent = String(index / subdivisions)
+      mark.append(label)
+    }
+    ruler.append(mark)
+  }
 }
 
 function setBusy(isBusy) {

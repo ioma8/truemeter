@@ -15,6 +15,13 @@
     .panel { display: grid; gap: 1rem; padding: 1rem; border: 1px solid #8886; border-radius: 16px; background: #8881; }
     .preview { display: grid; place-items: center; min-height: 220px; border: 1px solid #8886; border-radius: 12px; overflow: auto; background: #0001; }
     .payment-card { flex: none; display: grid; place-items: center; width: 323.53px; aspect-ratio: 85.6 / 53.98; border-radius: 10px; background: linear-gradient(135deg, #355cde, #8b5cf6); color: white; box-shadow: 0 8px 24px #0004; }
+    .rulers { display: grid; gap: .9rem; }
+    .ruler-wrap { display: grid; gap: .3rem; overflow-x: auto; padding-bottom: .25rem; }
+    .ruler-title { font-size: .85rem; font-weight: 650; }
+    .ruler { position: relative; height: 2.5rem; min-width: 1px; border-bottom: 2px solid currentColor; }
+    .ruler-mark { position: absolute; bottom: 0; width: 1px; height: .8rem; background: currentColor; }
+    .ruler-mark.major { height: 1.35rem; }
+    .ruler-mark span { position: absolute; top: 1.45rem; left: 50%; transform: translateX(-50%); font-size: .7rem; white-space: nowrap; }
     .estimate { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; }
     .badge { padding: .2rem .55rem; border-radius: 999px; background: #8b5cf633; font-size: .85rem; }
     label { display: grid; gap: .35rem; }
@@ -42,6 +49,16 @@
       <div class="preview" aria-label="True-size payment card preview">
         <div id="payment-card" class="payment-card">85.60 mm</div>
       </div>
+      <div class="rulers" aria-label="Physical measurement scales">
+        <div class="ruler-wrap">
+          <div class="ruler-title">Centimetres</div>
+          <div id="cm-ruler" class="ruler" aria-label="Centimetre scale from zero to ten"></div>
+        </div>
+        <div class="ruler-wrap">
+          <div class="ruler-title">Inches</div>
+          <div id="inch-ruler" class="ruler" aria-label="Inch scale from zero to four"></div>
+        </div>
+      </div>
       <div class="estimate"><strong>Current estimate</strong><span id="estimate-badge" class="badge">Loading…</span><output id="estimate"></output></div>
       <label for="calibration">Calibration scale <output id="calibration-value">1.000×</output>
       <input id="calibration" type="range" min="0.5" max="2" step="0.001" value="1">
@@ -54,6 +71,6 @@
     </section>
     <p class="muted">No measurements leave your browser. Automatic estimates are best-effort; use the calibration control for a verified result.</p>
   </main>
-  <script type="module" src="./demo.js?v=0.2.2"></script>
+  <script type="module" src="./demo.js?v=0.2.2-rulers"></script>
 </body>
 </html>
