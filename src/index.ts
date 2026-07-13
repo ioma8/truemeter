@@ -742,8 +742,11 @@ export function saveDisplayCalibration(context: DisplayContext, estimate: Displa
             updatedAt: new Date().toISOString(),
         }
         window.localStorage.setItem(calibrationStorageKey, JSON.stringify(stored))
-        // Retain the previous key for compatibility with existing local calibrations.
-        window.localStorage.setItem(legacyScreenScaleStorageKey, String(screenScale))
+        // Retain the previous key for compatibility with existing local calibrations. Never
+        // overwrite the structured store when an application intentionally uses one key for both.
+        if (legacyScreenScaleStorageKey !== calibrationStorageKey) {
+            window.localStorage.setItem(legacyScreenScaleStorageKey, String(screenScale))
+        }
     } catch {
         // Private browsing or a disabled storage policy: keep the session value only.
     }

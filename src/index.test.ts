@@ -3,6 +3,7 @@ import {
     CSS_REFERENCE_PPI,
     DISPLAY_CALIBRATIONS_STORAGE_KEY,
     clearDisplayCalibration,
+    configureDisplayCalibrationStorage,
     estimateFromDeviceProfiles,
     estimateFromEdidProfiles,
     estimateFromMobileViewportProfiles,
@@ -514,5 +515,22 @@ describe('display calibration', () => {
         clearDisplayCalibration(estimate)
 
         expect(estimateKnownDisplay(iPhone16).source).toBe('screenres-profile')
+    })
+
+    it('does not corrupt calibration storage when both configured keys are identical', () => {
+        configureDisplayCalibrationStorage({
+            storageKey: 'truemeter:test-shared-key',
+            legacyStorageKey: 'truemeter:test-shared-key',
+        })
+
+        const estimate = estimateKnownDisplay(iPhone16)
+        saveDisplayCalibration(iPhone16, estimate, 1.25)
+
+        expect(estimateKnownDisplay(iPhone16).source).toBe('saved-calibration')
+
+        configureDisplayCalibrationStorage({
+            storageKey: DISPLAY_CALIBRATIONS_STORAGE_KEY,
+            legacyStorageKey: 'truemeter:screen-scale',
+        })
     })
 })

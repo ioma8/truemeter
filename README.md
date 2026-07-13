@@ -7,10 +7,10 @@ It combines current screen dimensions with known panel profiles, high-entropy Cl
 ## Install
 
 ```bash
-npm install github:ioma8/truemeter#v0.1.1
+npm install truemeter
 ```
 
-The package is npm-ready and has no runtime dependencies. It is currently distributed from GitHub; the import name remains `truemeter`.
+The package has no runtime dependencies. The import name is `truemeter`.
 
 ## Use
 
