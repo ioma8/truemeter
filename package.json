@@ -1,6 +1,7 @@
 {
   "name": "truemeter",
   "version": "0.2.0",
+  "author": "ioma8",
   "description": "Browser-first true-size rendering from display PPI estimation, known panels, and local calibration.",
   "type": "module",
   "main": "./dist/index.js",
@@ -44,6 +45,9 @@
     "browser"
   ],
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ioma8/truemeter.git"
