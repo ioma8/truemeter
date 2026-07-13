@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TrueMeter demo</title>
+  <style>
+    :root { color-scheme: light dark; font: 16px/1.5 system-ui, sans-serif; }
+    body { max-width: 760px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+    .card { display: grid; gap: 1rem; }
+    .preview { display: grid; place-items: center; min-height: 180px; border: 1px solid #8886; border-radius: 12px; overflow: auto; }
+    .payment-card { flex: none; display: grid; place-items: center; width: 323.53px; aspect-ratio: 85.6 / 53.98; border-radius: 10px; background: linear-gradient(135deg, #355cde, #8b5cf6); color: white; box-shadow: 0 8px 24px #0004; }
+    button, input { font: inherit; }
+    button { padding: .55rem .8rem; }
+    .muted { color: #888; }
+    output { font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>TrueMeter</h1>
+    <p>See how a known 85.60 mm payment-card width is rendered on this display.</p>
+    <section class="preview" aria-label="True-size payment card preview">
+      <div id="payment-card" class="payment-card">85.60 mm</div>
+    </section>
+    <p><strong>Estimate:</strong> <output id="estimate">Loading…</output></p>
+    <label>Calibration scale
+      <input id="calibration" type="range" min="0.5" max="2" step="0.001" value="1">
+      <output id="calibration-value">1.000×</output>
+    </label>
+    <div>
+      <button id="identify" type="button">Identify current display</button>
+      <span id="identify-status" class="muted"></span>
+    </div>
+    <p class="muted">No measurements leave your browser. Automatic estimates are best-effort; use the calibration control for a verified result.</p>
+    <p><a href="https://github.com/ioma8/truemeter">View the source on GitHub</a></p>
+  </main>
+  <script type="module" src="./demo.js"></script>
+</body>
+</html>

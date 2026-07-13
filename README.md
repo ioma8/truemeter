@@ -1,5 +1,7 @@
 # TrueMeter
 
+[![CI](https://github.com/ioma8/truemeter/actions/workflows/ci.yml/badge.svg)](https://github.com/ioma8/truemeter/actions/workflows/ci.yml) [![npm](https://img.shields.io/npm/v/truemeter)](https://www.npmjs.com/package/truemeter) [![npm downloads](https://img.shields.io/npm/dm/truemeter)](https://www.npmjs.com/package/truemeter)
+
 **TrueMeter makes browser UI physically honest.** It estimates a display's physical scale and turns known millimetres into correctly sized CSS pixels — for products at true size, a 85.60 mm payment card, a millimetre ruler, or any physical reference.
 
 It combines current screen dimensions with known panel profiles, high-entropy Client Hints, optional Window Management display labels, EDID-derived physical dimensions, and persisted local calibration. Resolution alone is never treated as a monitor's physical size.
@@ -11,6 +13,8 @@ npm install truemeter
 ```
 
 The package has no runtime dependencies. The import name is `truemeter`.
+
+Try the [live true-size demo](https://ioma8.github.io/truemeter/), or browse the [changelog](./CHANGELOG.md).
 
 ## Use
 
@@ -33,6 +37,12 @@ const preciseEstimate = detailed
 ```
 
 `DisplayEstimate` includes `ppi`, `screenScale`, `pixelsPerCssPixel`, `source`, `confidence`, `label`, and a stable calibration `signature`.
+
+## Browser support
+
+TrueMeter works in modern evergreen browsers. It uses ordinary screen metrics everywhere and progressively enhances the estimate with Client Hints, Window Management display labels, and local storage when those capabilities are available. Unsupported or anonymous displays receive a conservative CSS baseline and can always be calibrated manually.
+
+The library is browser-first and has no runtime network requests. The optional display-label permission must be requested from a user gesture.
 
 ## Render an image at its true physical size
 
@@ -111,11 +121,23 @@ EDID_SOURCE_DIR=/path/to/EDID/Digital npm run sync-edid-profiles
 
 See [ATTRIBUTIONS.md](./ATTRIBUTIONS.md) for source licenses. The code is MIT; generated profile data retains its source-specific attribution and licence obligations.
 
+## API
+
+- `resolveDisplayEstimate()` resolves the current browser display.
+- `resolveDisplayEstimateForContext(context)` resolves a supplied display context, useful for testing or display-management integrations.
+- `requestDetailedDisplayContext()` optionally asks for a display label after a user gesture.
+- `saveDisplayCalibration()` and `clearDisplayCalibration()` manage per-display calibration.
+- `configureDisplayCalibrationStorage()` adapts the storage keys for an existing application.
+
+See the exported TypeScript declarations for the complete API contract.
+
 ## Development
 
 ```bash
 npm install
 npm run check
 ```
+
+The repository also contains a static demo in [`docs/`](./docs/), which is deployed to GitHub Pages after changes to `main`.
 
 `npm run check` runs strict TypeScript validation, the resolver suite, a production build, and `npm pack --dry-run`. GitHub Actions runs the same check on Node 20, 22, and 24 for pushes, tags, and pull requests.

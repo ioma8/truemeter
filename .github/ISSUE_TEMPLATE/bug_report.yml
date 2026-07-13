@@ -1,0 +1,25 @@
+name: Bug report
+description: Report incorrect resolver behavior or a package problem.
+labels: [bug]
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happened?
+      description: Describe the estimate, display, and behavior you observed.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: TrueMeter version
+      placeholder: 0.2.0
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Browser and display environment
+      description: Include browser, OS, display mode, DPR, and whether calibration was used.
+    validations:
+      required: true
