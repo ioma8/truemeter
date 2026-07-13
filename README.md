@@ -1,16 +1,16 @@
 # TrueMeter
 
-TrueMeter makes a best-effort browser estimate of a display's physical scale. It combines current screen dimensions with known panel profiles, high-entropy Client Hints, optional Window Management display labels, EDID-derived physical dimensions, and persisted local calibration.
+**TrueMeter makes browser UI physically honest.** It estimates a display's physical scale and turns known millimetres into correctly sized CSS pixels — for products at true size, a 85.60 mm payment card, a millimetre ruler, or any physical reference.
 
-It is designed for rendering real-world dimensions: a 85.60 mm card, product at actual scale, a millimetre ruler, or any other physical reference.
+It combines current screen dimensions with known panel profiles, high-entropy Client Hints, optional Window Management display labels, EDID-derived physical dimensions, and persisted local calibration. Resolution alone is never treated as a monitor's physical size.
 
 ## Install
 
 ```bash
-npm install github:ioma8/truemeter
+npm install github:ioma8/truemeter#v0.1.1
 ```
 
-The package is npm-ready; publish a release to the npm registry when a registry distribution is wanted.
+The package is npm-ready and has no runtime dependencies. It is currently distributed from GitHub; the import name remains `truemeter`.
 
 ## Use
 
@@ -34,6 +34,28 @@ const preciseEstimate = detailed
 
 `DisplayEstimate` includes `ppi`, `screenScale`, `pixelsPerCssPixel`, `source`, `confidence`, `label`, and a stable calibration `signature`.
 
+## Render an image at its true physical size
+
+If an object spans a known fraction of an image's width, scale the **image frame** so that the object itself measures correctly. The source image may include padding or an open tool: only `objectFraction` needs to describe the visible object's share of the image width.
+
+```ts
+import { CSS_REFERENCE_PPI, resolveDisplayEstimate } from 'truemeter'
+
+const knifeLengthMm = 91
+const knifeBodyFraction = 0.64 // body occupies 64% of the source image width
+const estimate = await resolveDisplayEstimate()
+
+// CSS pixels needed for the whole source image. Keep the image aspect ratio.
+const imageWidthCssPx = (knifeLengthMm / knifeBodyFraction)
+  * (CSS_REFERENCE_PPI / 25.4)
+  * estimate.screenScale
+
+imageElement.style.width = `${imageWidthCssPx}px`
+imageElement.style.height = 'auto'
+```
+
+`screenScale` is the correction from CSS's nominal 96 dpi to the current display. A 1 mm CSS reference requires `CSS_REFERENCE_PPI / 25.4 * screenScale` CSS pixels. Show a calibration control whenever the result is not `verified`; save its value with `saveDisplayCalibration()` so future renders on that display become verified.
+
 For applications migrating from an existing local-storage key:
 
 ```ts
@@ -47,11 +69,30 @@ configureDisplayCalibrationStorage({
 
 Use `saveDisplayCalibration()` after a user adjusts the scale and `clearDisplayCalibration()` to reset only the active display.
 
-## Accuracy and privacy
+## Accuracy, confidence, and privacy
 
 The resolver makes no network request at runtime. It only treats an estimate as high confidence when a panel identity is available. A browser cannot obtain the physical dimensions of an anonymous desktop monitor from resolution alone, so those displays deliberately remain a low-confidence 96 CSS-dpi fallback until a display label or local calibration is available.
 
 The optional `getScreenDetails()` flow is permission-gated and must be called from a user gesture.
+
+| Confidence | Meaning | Recommended UX |
+| --- | --- | --- |
+| `verified` | A local calibration was saved for this display identity. | Render at true size. |
+| `high` | A specific panel or display label matched. | Render at true size; leave calibration available. |
+| `medium` | A conservative, unambiguous internal/mobile match. | Render with a visible calibration affordance. |
+| `low` | No physical panel identity is available; uses the CSS baseline. | Do not claim precision; ask the user to calibrate. |
+
+## Benchmark and test coverage
+
+TrueMeter's automated test suite has **28 resolver tests**. Its data-driven benchmark resolves **all 75 bundled ScreenRes profiles** using each profile's label, viewport, pixel ratio, and expected PPI. The suite also covers the resolver's critical safety and precedence rules:
+
+- saved calibrations surviving browser zoom and remaining isolated by display;
+- EDID dimensions beating catalog labels, plus ambiguous and generic-label rejection;
+- identified external displays never inheriting a laptop or handset panel;
+- Client Hints, device model aliases, Android user-agent rules, and conservative viewport fallbacks;
+- internal Retina Mac displays, exact ScreenRes labels, and the anonymous-display CSS fallback.
+
+The bundled data currently contains 6,495 device profiles, 3,386 user-agent rules, 12,093 EDID profiles, 75 ScreenRes records, and 8 Apple internal-display profiles. This is **resolver and source-data coverage**, not a hardware-lab accuracy claim: browser privacy boundaries prevent automatic verification of an anonymous monitor's physical dimensions. A user calibration is the definitive fallback and is intentionally persisted per display.
 
 ## Data and updates
 
@@ -74,7 +115,7 @@ See [ATTRIBUTIONS.md](./ATTRIBUTIONS.md) for source licenses. The code is MIT; g
 
 ```bash
 npm install
-npm test
-npm run type-check
-npm run build
+npm run check
 ```
+
+`npm run check` runs strict TypeScript validation, the resolver suite, a production build, and `npm pack --dry-run`. GitHub Actions runs the same check on Node 20, 22, and 24 for pushes, tags, and pull requests.
