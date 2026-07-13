@@ -1,7 +1,7 @@
 {
   "name": "truemeter",
-  "version": "0.1.0",
-  "description": "Browser-first physical display PPI estimation from known panels, display labels, and local calibration.",
+  "version": "0.2.0",
+  "description": "Browser-first true-size rendering from display PPI estimation, known panels, and local calibration.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -11,6 +11,9 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     }
+  },
+  "engines": {
+    "node": ">=20"
   },
   "files": [
     "dist",
@@ -22,6 +25,7 @@
     "build": "tsup src/index.ts --format esm --dts --splitting --clean",
     "test": "vitest run",
     "type-check": "tsc --noEmit",
+    "check": "npm run type-check && npm test && npm run build && npm pack --dry-run",
     "sync-display-profiles": "node scripts/sync-display-profiles.mjs && node scripts/sync-screenres-profiles.mjs",
     "sync-edid-profiles": "node scripts/sync-edid-profiles.mjs",
     "prepack": "npm run build",
@@ -32,6 +36,9 @@
     "display",
     "screen",
     "physical-size",
+    "true-size",
+    "true-scale",
+    "millimeter",
     "calibration",
     "edid",
     "browser"
