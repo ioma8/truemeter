@@ -1,13 +1,3 @@
-import {
-  clearDisplayCalibration,
-  cssPixelsForMillimetres,
-  estimateKnownDisplay,
-  getDisplayContext,
-  requestDetailedDisplayContext,
-  resolveDisplayEstimateForContext,
-  saveDisplayCalibration,
-} from 'https://cdn.jsdelivr.net/npm/truemeter@0.2.2/dist/index.js'
-
 const card = document.querySelector('#payment-card')
 const estimateOutput = document.querySelector('#estimate')
 const calibration = document.querySelector('#calibration')
@@ -16,7 +6,15 @@ const estimateBadge = document.querySelector('#estimate-badge')
 const identify = document.querySelector('#identify')
 const restore = document.querySelector('#restore')
 const status = document.querySelector('#status')
-let context = getDisplayContext()
+const moduleUrl = 'https://cdn.jsdelivr.net/npm/truemeter@0.2.2/dist/index.js'
+let clearDisplayCalibration
+let cssPixelsForMillimetres
+let estimateKnownDisplay
+let getDisplayContext
+let requestDetailedDisplayContext
+let resolveDisplayEstimateForContext
+let saveDisplayCalibration
+let context
 let estimate
 let manuallyCalibrated = false
 let resolving = false
@@ -100,4 +98,28 @@ restore.addEventListener('click', async () => {
   await resolve(context)
 })
 
-resolve(context)
+async function start() {
+  try {
+    ({
+      clearDisplayCalibration,
+      cssPixelsForMillimetres,
+      estimateKnownDisplay,
+      getDisplayContext,
+      requestDetailedDisplayContext,
+      resolveDisplayEstimateForContext,
+      saveDisplayCalibration,
+    } = await import(moduleUrl))
+    context = getDisplayContext()
+    await resolve(context)
+  } catch {
+    status.textContent = 'TrueMeter could not load. Check your connection and reload the page.'
+    identify.disabled = true
+    restore.disabled = true
+    calibration.disabled = true
+  }
+}
+
+identify.disabled = true
+restore.disabled = true
+calibration.disabled = true
+start()
